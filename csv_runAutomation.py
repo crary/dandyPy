@@ -27,7 +27,7 @@ with open("vars.py", "w") as varsfile:
 print("Done creating variable file...") 
 
 ## Frontload stop script
-stopScript = "bash -c; sshpass -p Qwerty123! ssh -o StrictHostKeyChecking=no oem@" + str(linux_host) +  str(' "') \
+stopScript = "bash -c; sshpass -p xxxxx ssh -o StrictHostKeyChecking=no moo@" + str(linux_host) +  str(' "') \
 + ". ~/Desktop/Automation_linux/copy_stopScript.sh " + str(ip1) +  str('"')
 subprocess.run(stopScript, shell=True)
 print("Stop script loaded onto DUT ", ip1)
