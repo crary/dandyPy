@@ -4,12 +4,12 @@ import subprocess
 
 ## Program Variables
 csvFile = "run_template.csv"
-ip1 = "192.168.3.149"
-ip2 = "192.168.3.42"
-linux_host = "10.23.15.214"
+ip1 = ""
+ip2 = ""
+linux_host = ""
 boot_delay = "120s"
-pac_rec_path = r"F:\\ADLP-REDRIX-DVT2_OCH-6761"
-pac_conf_path = r"F:\\ADLP-REDRIX-DVT2_OCH-6761\\0 .Config\\Redrix-DVT_OCH-6761_sys_rail_config_r2.csv"
+pac_rec_path = r""
+pac_conf_path = r""
 
 ## Create Vars variable file
 # Writes to vars file so that variable are accesable globally within program
