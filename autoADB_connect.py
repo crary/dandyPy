@@ -48,6 +48,12 @@ def scriptADB():
     dutClient.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     dutClient.connect(dutHost, port, dutUser, dutPass)
 
+## Creates python script needed to accept ADB connection
+def scriptADB():
+    dutClient = paramiko.SSHClient()
+    dutClient.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+    dutClient.connect(dutHost, port, dutUser, dutPass)
+
     ## File for python script
     touchFile = "touch /home/adbconnect.py; chmod 755 /home/adbconnect.py"
     dutClient.exec_command(touchFile)
@@ -55,8 +61,8 @@ def scriptADB():
     adbConn = ['import uinput', 'import time',\
         'device = uinput.Device([uinput.KEY_ENTER, uinput.KEY_TAB, uinput.KEY_W, uinput.KEY_LEFTCTRL])', \
             'device.emit_click(uinput.KEY_TAB)', 'time.sleep(1)', 'device.emit_click(uinput.KEY_TAB)', 'time.sleep(1)',\
-                'device.emit_click(uinput.KEY_TAB)', 'time.sleep(1)', 'device.emit_click(uinput.KEY_ENTER)',\
-                   'time.sleep(1)', 'device.emit_combo([uinput.KEY_LEFTCTRL, uinput.KEY_W])' ]
+                'device.emit_click(uinput.KEY_TAB)', 'time.sleep(1)','device.emit_click(uinput.KEY_TAB)', 'time.sleep(1)',\
+                    'device.emit_click(uinput.KEY_ENTER)', 'time.sleep(1)', 'device.emit_combo([uinput.KEY_LEFTCTRL, uinput.KEY_W])' ]
 
     for cmd in adbConn:
             stdin, stdout, stderr = dutClient.exec_command("echo " + "'" + cmd + "'" + " >> /home/adbconnect.py" )
