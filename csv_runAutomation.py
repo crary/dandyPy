@@ -3,6 +3,9 @@ import pandas as pd
 import subprocess
 import logging
 import time
+import os
+import bkcUpdate
+
 
 ## Program Variables
 csvFile = "run_template.csv"
@@ -28,6 +31,20 @@ logging.basicConfig(
                     level=logging.DEBUG,
                     format="%(asctime)s:%(levelname)s:%(message)s"
                     )
+
+## Establish/check connection between all machines with SSH
+ssh_check = "bash -c; sshpass -p Qwerty123! ssh -o StrictHostKeyChecking=no oem@" + str(linux_host) +  str(' "') \
++ ". ~/Desktop/Automation_linux/dut_ssh_connect.sh " + str(ip1) +  str('"')
+subprocess.run(ssh_check, shell=True, stdout=subprocess.PIPE)
+logging.debug(f"Successful ssh test connection to dut {ip1}")
+print(f"{timestr} Successful ssh test connection to dut {ip1}")
+
+
+## Pull BKC details from DUT into text file in /logs dir
+pull_BKC = "bash get_BKC.sh " + str(ip1) + " " + str(linux_host)
+subprocess.run(pull_BKC, shell=True)
+logging.debug(f"BKC text file copied to /logs directory from dut: {ip1}")
+print(f"BKC text file copied to /logs directory from dut: {ip1}")
 
 ## Create Vars variable file
 # Writes to vars file so that variable are accesable globally within program
@@ -69,11 +86,24 @@ kpis.append("run_counter_ido_soc.txt")
 kpis.append("run_counter_lvp_soc.txt")
 kpis.append("run_counter_plt.txt")
 
-
 for i in range(len(kpis)):
     file = open(kpis[i], 'w')
     file.write(str(1))
     file.close()
+
+## Get BKC from DUT
+print ("Getting BKC from DUT: ", ip1)
+getBKC = 'bash ./get_BKC.sh ' + str(ip1) + ' ' + str(linux_host) + ' ' + str(boot_delay)
+subprocess.run(getBKC, shell=True)
+logging.debug(f"BKC data pulled from DUT:{ip1}")
+
+## Update KPI naming with BKC information from DUT
+verM = bkcUpdate.versionID()
+buildM = bkcUpdate.buildID()
+### change version and build ID
+bkcUpdate.bkcReplace(verM,int(-5))
+bkcUpdate.bkcReplace(buildM,int(-3))
+logging.debug(f"BKC naming file updated - Version:{verM} - Build ID:{buildM}")
 
 ## define kpis to run
 ## No Reboot PACS IDO
@@ -88,7 +118,6 @@ def nrIDO(runtype):
         logging.debug(f"Starting NR_IDO SOCWATCH collection, running on host: {linux_host}")
         ido_soc = 'cmd.exe /C python.exe "run_pacs_NR-IDO_wSOC.py"'
         subprocess.run(ido_soc, shell=True)
-
 
 ## LVP PACS 
 def lvp(runtype):
